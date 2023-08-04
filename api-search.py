@@ -1,6 +1,7 @@
 from langchain import PromptTemplate
 
 import langchain_visualizer
+from langchain.chains import LLMMathChain
 
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import initialize_agent, Tool, AgentType
@@ -21,12 +22,19 @@ if __name__ == "__main__":
     # Connected to OpenAI API and using openai package underneath
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
 
+    llm_math = LLMMathChain(llm=llm)
+
     tools_for_agent = [
         Tool(
             name="Docs",
             func=get_documentation,
             description="useful for databricks documentation",
-        )
+        ),
+        Tool(
+            name="Calculator",
+            func=llm_math.run,
+            description="Useful for when you need to answer questions about math.",
+        ),
     ]
 
     agent = initialize_agent(
