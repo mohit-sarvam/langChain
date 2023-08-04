@@ -2,6 +2,7 @@ from langchain import PromptTemplate
 
 import langchain_visualizer
 import asyncio
+from langchain.chains import LLMMathChain
 
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
@@ -13,16 +14,17 @@ if __name__ == "__main__":
     print("Hello LangChain!")
 
     template = """
-         Given my use case {use_case}, I want you to find the name of appropriate Databricks API.
+         {query}
      """
 
-    prompt_template = PromptTemplate(input_variables=["use_case"], template=template)
+    prompt_template = PromptTemplate(input_variables=["query"], template=template)
 
     # Connected to OpenAI API and using openai package underneath
     llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
 
     prompt = PromptTemplate(input_variables=["query"], template="{query}")
     llm_chain = LLMChain(llm=llm, prompt=prompt)
+    llm_math = LLMMathChain(llm=llm)
 
     tools_for_agent = [
         Tool(
@@ -30,7 +32,11 @@ if __name__ == "__main__":
             func=get_documentation,
             description="useful for databricks documentation",
         ),
-        # initialize the LLM tool
+        Tool(
+            name="Calculator",
+            func=llm_math.run,
+            description="Useful for when you need to answer questions about math.",
+        ),
         Tool(
             name="Language Model",
             func=llm_chain.run,
@@ -48,7 +54,7 @@ if __name__ == "__main__":
     async def async_run_agent():
         return agent.run(
             prompt_template.format_prompt(
-                use_case="Submit Sql queries to my lakehouse."
+                query="What is Capital of India?"
             )
         )
 
