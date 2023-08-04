@@ -8,7 +8,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, Tool, AgentType
 
-from third_parties.databricks import get_documentation
+from third_parties.databricks import get_documentation, get_full_documentation
 
 if __name__ == "__main__":
     print("Hello LangChain!")
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     tools_for_agent = [
         Tool(
             name="Docs",
-            func=get_documentation,
+            func=get_full_documentation,
             description="useful for databricks documentation",
         ),
         Tool(
@@ -53,9 +53,7 @@ if __name__ == "__main__":
 
     async def async_run_agent():
         return agent.run(
-            prompt_template.format_prompt(
-                query="What is Capital of India?"
-            )
+            prompt_template.format_prompt(query="What is Capital of India?")
         )
 
     langchain_visualizer.visualize(async_run_agent)
