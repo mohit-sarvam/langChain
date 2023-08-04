@@ -2,6 +2,7 @@ from langchain import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 
+import langchain_visualizer
 
 if __name__ == "__main__":
     print("Hello LangChain!")
@@ -19,4 +20,9 @@ if __name__ == "__main__":
 
     chain = LLMChain(llm=llm, prompt=prompt_template)
 
-    print(chain.run(use_case="Submit Sql queries to my lakehouse."))
+
+    async def async_run_agent():
+        return chain.run(use_case="Submit Sql queries to my lakehouse.")
+
+
+    langchain_visualizer.visualize(async_run_agent)
