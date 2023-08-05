@@ -9,15 +9,15 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.chains import LLMChain, RetrievalQA
 
-from third_parties.databricks import get_documentation
+from third_parties.databricks import get_full_documentation
 
 if __name__ == "__main__":
     print("Hello LangChain!")
 
     text_splitter = CharacterTextSplitter(
-        chunk_size=100, chunk_overlap=30, separator="\n"
+        chunk_size=200, chunk_overlap=30, separator="\n"
     )
-    docs = text_splitter.split_documents(documents=get_documentation())
+    docs = text_splitter.split_documents(documents=get_full_documentation())
 
     embeddings = OpenAIEmbeddings()
     vectorstore = FAISS.from_documents(docs, embeddings)
